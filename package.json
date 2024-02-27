@@ -1,0 +1,24 @@
+{
+  "name": "sdk",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/sentinela-sdk.umd.cjs",
+  "module": "./dist/sentinela-sdk.js",
+  "exports": {
+    ".": {
+      "import": "./dist/sentinela-sdk.js",
+      "require": "./dist/sentinela-sdk.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.1.4"
+  }
+}
