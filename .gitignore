@@ -8,7 +8,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+
+# I'm using github to serve dist files
+# dist
+
 dist-ssr
 *.local
 
