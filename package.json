@@ -1,5 +1,5 @@
 {
-  "name": "@sentinela/sdk",
+  "name": "sentinela-sdk",
   "version": "0.0.1",
   "type": "module",
   "files": [
@@ -18,7 +18,8 @@
     "build": "vite build",
     "build:watch": "vite build --watch",
     "preview": "vite preview",
-    "deploy": "npm run build && wrangler pages deploy dist"
+    "deploy:cdn": "npm run build && wrangler pages deploy dist",
+    "deploy": "npm publish --access public"
   },
   "devDependencies": {
     "vite": "^5.1.4",
