@@ -1,52 +1,66 @@
-var m = Object.defineProperty;
-var h = (t, e, n) => e in t ? m(t, e, { enumerable: !0, configurable: !0, writable: !0, value: n }) : t[e] = n;
-var o = (t, e, n) => (h(t, typeof e != "symbol" ? e + "" : e, n), n), g = (t, e, n) => {
-  if (!e.has(t))
-    throw TypeError("Cannot " + n);
+var d = Object.defineProperty;
+var l = (e, n, t) => n in e ? d(e, n, { enumerable: !0, configurable: !0, writable: !0, value: t }) : e[n] = t;
+var o = (e, n, t) => (l(e, typeof n != "symbol" ? n + "" : n, t), t), u = (e, n, t) => {
+  if (!n.has(e))
+    throw TypeError("Cannot " + t);
 };
-var a = (t, e, n) => {
-  if (e.has(t))
+var i = (e, n, t) => {
+  if (n.has(e))
     throw TypeError("Cannot add the same private member more than once");
-  e instanceof WeakSet ? e.add(t) : e.set(t, n);
+  n instanceof WeakSet ? n.add(e) : n.set(e, t);
 };
-var c = (t, e, n) => (g(t, e, "access private method"), n);
-function p() {
+var s = (e, n, t) => (u(e, n, "access private method"), t);
+function h() {
   return window.crypto.randomUUID();
 }
-function f() {
-  const t = window.localStorage.getItem("sentinela-userid");
-  if (!t) {
-    const e = p();
-    return window.localStorage.setItem("sentinela-userid", e), e;
+function m() {
+  const e = window.localStorage.getItem("sentinela-userid");
+  if (!e) {
+    const n = h();
+    return window.localStorage.setItem("sentinela-userid", n), n;
   }
-  return t;
+  return e;
 }
-function S() {
+function g() {
   return console.log("https://sentinela-analytics.onrender.com"), "https://sentinela-analytics.onrender.com";
 }
-var i, d, s, l;
-class I {
+var r, a;
+class w {
   constructor() {
-    a(this, i);
-    a(this, s);
+    i(this, r);
     o(this, "endpoint");
     o(this, "domain");
     o(this, "userId");
   }
   start() {
-    this.endpoint = S(), this.domain = document.currentScript.getAttribute("data-domain"), this.userId = f(), c(this, i, d).call(this);
+    this.endpoint = g(), this.domain = document.currentScript.getAttribute("data-domain"), this.userId = m(), s(this, r, a).call(this);
   }
-  async sendError(e) {
-    e = {
-      ...e,
+  async onError(n) {
+    console.log("Error caught", n);
+    const t = {
+      message: n.error.message,
+      stack: n.error.stack,
+      filename: n.filename,
+      lineno: n.lineno,
+      colno: n.colno
+    };
+    try {
+      await this.sendError(t);
+    } catch (c) {
+      console.error(c);
+    }
+  }
+  async sendError(n) {
+    n = {
+      ...n,
       user_id: this.userId,
       date: (/* @__PURE__ */ new Date()).toISOString(),
       href: location.href,
       referrer: document.referrer || null,
       domain: this.domain
     };
-    const n = `${this.endpoint}/errors`;
-    return fetch(n, {
+    const t = `${this.endpoint}/errors`;
+    return fetch(t, {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
@@ -54,33 +68,15 @@ class I {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ ...e })
+      body: JSON.stringify({ ...n })
     });
   }
 }
-i = new WeakSet(), d = function() {
-  window.addEventListener("error", (e) => c(this, s, l).call(this, e));
-}, s = new WeakSet(), l = async function(e) {
-  const n = {
-    message: e.error.message,
-    stack: e.error.stack,
-    filename: e.filename,
-    lineno: e.lineno,
-    colno: e.colno
-  };
-  try {
-    await this.sendError(n);
-  } catch (r) {
-    console.error(r);
-  }
+r = new WeakSet(), a = function() {
+  window.addEventListener("error", (n) => this.onError(n));
 };
-((t, e) => {
-  t.location;
-  var r = t.document.querySelector('[src*="' + e + '"]');
-  r && r.getAttribute("data-domain");
-  const u = new I({
-    apiDomain: e,
-    host: e
-  });
-  t.Sentinela = u, t.Sentinela.start();
-})(window, "http://localhost:3000");
+(() => {
+  console.log("Running sdk");
+  const e = new w();
+  window.Sentinela = e, window.Sentinela.start();
+})();
